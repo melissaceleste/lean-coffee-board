@@ -2,9 +2,13 @@ const express = require('express')
 const { v4: uuidv4 } = require('uuid')
 
 const mongoose = require('mongoose')
+const User = require('./models/User')
 
 mongoose
-  .connect('mongodb://localhost/lean-coffee-board')
+  .connect('mongodb://localhost/lean-coffee-board', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log('connected to mongodb'))
   .catch(error => console.log('could not connect to mongodb', error))
 
@@ -13,22 +17,22 @@ let users = []
 
 app.use(express.json())
 
-app.get('/api/users', (req, res) => {
+app.get('/api/users', async (req, res) => {
   // hiermit lassen wir uns die /api/users anzeigen
-  res.json(users)
+  res.json(await User.find()) // ist das gleiche wie User.find().then(users=> res.json(users))
 })
 
-app.get('/api/users/:id', (req, res) => {
+app.get('/api/users/:id', async (req, res) => {
   // hiermit lassen wir uns die jeweiligen User mit der entsprechenden ID (die wir einfügen) anzeigen lassen
   const { id } = req.params
-  res.json(users.find(user => user.id === id))
+  res.json(await User.findOne({ id }))
 })
 
-app.post('/api/users', (req, res) => {
+app.post('/api/users', async (req, res) => {
   // hiermit können wir neue User hinzufügen
-  const newUser = { ...req.body, id: uuidv4() }
-  users.push(newUser)
-  res.json(newUser)
+  //   const newUser = { ...req.body, id: uuidv4() }
+  //   users.push(newUser)
+  res.json(await User.create(req.body))
 })
 
 app.delete('/api/users/:id', (req, res) => {
