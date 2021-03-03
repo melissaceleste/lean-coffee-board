@@ -1,11 +1,12 @@
-const express = require('express')
-const { v4: uuidv4 } = require('uuid')
+const express = require('express') // Import express (Framework für node)
+const { v4: uuidv4 } = require('uuid') // Import UUID, nachdem wir npm install uuid gemacht haben
 
-const mongoose = require('mongoose')
-const User = require('./models/User')
+const mongoose = require('mongoose') // Import mongoose
+const User = require('./models/User') // import des Models User aus User.js
 
 mongoose
   .connect('mongodb://localhost/lean-coffee-board', {
+    // verbindet mongo-DB mit lean-coffee-board
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -14,7 +15,7 @@ mongoose
 
 const app = express() // damit bekommen wir eine Express-app - App ist hier eine Instanz - keine App wie wir sie können
 
-app.use(express.json())
+app.use(express.json()) //erste middleware-Funktion, müssen wir aufrufen, damit wir danach klassische Middlewares mit den HTTP-Methods schreiben können
 
 app.get('/api/users', async (req, res) => {
   // hiermit lassen wir uns die /api/users anzeigen
