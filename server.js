@@ -13,7 +13,6 @@ mongoose
   .catch(error => console.log('could not connect to mongodb', error))
 
 const app = express() // damit bekommen wir eine Express-app - App ist hier eine Instanz - keine App wie wir sie können
-let users = []
 
 app.use(express.json())
 
@@ -35,11 +34,12 @@ app.post('/api/users', async (req, res) => {
   res.json(await User.create(req.body))
 })
 
-app.delete('/api/users/:id', (req, res) => {
+app.delete('/api/users/:id', async (req, res) => {
   const { id } = req.params
-  const index = users.findIndex(user => user.id === id)
-  users = [...users.slice(0, index), ...users.slice(index + 1)]
-  res.json(users)
+
+  //   const index = users.findIndex(user => user.id === id)
+  //   users = [...users.slice(0, index), ...users.slice(index + 1)]
+  res.json(await User.deleteOne({ id }))
 })
 
 app.listen(3000, () => {
