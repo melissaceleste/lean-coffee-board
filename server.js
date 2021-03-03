@@ -1,13 +1,12 @@
 const express = require('express')
 const { v4: uuidv4 } = require('uuid')
 
-
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/lean-coffee-board')
-.then(() => console.log('connected to mongodb'))
-.catch(error => console.log('could not connect to mongodb', error))
-
+mongoose
+  .connect('mongodb://localhost/lean-coffee-board')
+  .then(() => console.log('connected to mongodb'))
+  .catch(error => console.log('could not connect to mongodb', error))
 
 const app = express() // damit bekommen wir eine Express-app - App ist hier eine Instanz - keine App wie wir sie können
 let users = []
