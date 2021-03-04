@@ -2,7 +2,6 @@ const express = require('express') // Import express (Framework für node)
 const { v4: uuidv4 } = require('uuid') // Import UUID, nachdem wir npm install uuid gemacht haben
 
 const mongoose = require('mongoose') // Import mongoose
-const User = require('./models/User') // import des Models User aus User.js
 
 mongoose
   .connect('mongodb://localhost/lean-coffee-board', {
@@ -17,32 +16,16 @@ const app = express() // damit bekommen wir eine Express-app - App ist hier eine
 
 app.use(express.json()) //erste middleware-Funktion, müssen wir aufrufen, damit wir danach klassische Middlewares mit den HTTP-Methods schreiben können
 
-app.get('/api/users', async (req, res) => {
-  // hiermit lassen wir uns die /api/users anzeigen
-  res.json(await User.find()) // ist das gleiche wie User.find().then(users=> res.json(users))
+// -----import der User:----
+app.use('/api/users', require('./routes/users'))
+// -----import der Card:----
+app.use('/api/cards', require('./routes/cards'))
+
+// Middleware die den error entgegennimmt /Fehlerhandling:
+app.use((err, req, res, next) => {
+  console.log(err.message)
+  res.json({ error: err.message })
 })
-
-app.get('/api/users/:id', async (req, res) => {
-  // hiermit lassen wir uns die jeweiligen User mit der entsprechenden ID (die wir einfügen) anzeigen lassen
-  const { id } = req.params
-  res.json(await User.findOne({ id }))
-})
-
-app.post('/api/users', async (req, res) => {
-  // hiermit können wir neue User hinzufügen
-  //   const newUser = { ...req.body, id: uuidv4() }
-  //   users.push(newUser)
-  res.json(await User.create(req.body))
-})
-
-app.delete('/api/users/:id', async (req, res) => {
-  const { id } = req.params
-
-  //   const index = users.findIndex(user => user.id === id)
-  //   users = [...users.slice(0, index), ...users.slice(index + 1)]
-  res.json(await User.deleteOne({ id }))
-})
-
-app.listen(3000, () => {
-  console.log('Server started at locoalhost:3000')
+app.listen(4000, () => {
+  console.log('Server started at http://localhost:4000')
 })
